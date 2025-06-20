@@ -5,5 +5,12 @@
     "baseUrl": ".",
     "paths": { "~/*": ["./*"], "@/*": ["./*"] }
   },
-  "include": ["nuxt.config.ts", "server/**/*", "composables/**/*", "components/**/*", "pages/**/*"]
+  "include": [
+    "nuxt.config.ts",
+    "server/**/*",
+    "prisma/**/*",
+    "components/**/*",
+    "composables/**/*",
+    "pages/**/*"
+  ]
 }

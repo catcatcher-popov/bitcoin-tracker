@@ -2,8 +2,6 @@ version: "3.9"
 
 services:
   app:
-    # Вместо rebuild собираем образ только один раз,
-    # а в dev монтируем исходники
     build:
       context: ./nuxt-app
       dockerfile: Dockerfile
@@ -14,10 +12,9 @@ services:
         npm run dev
       "
     volumes:
-      - ./nuxt-app:/app               # весь код монтируется в /app
-      - /app/node_modules             # node_modules — из контейнера, чтобы не затирать
+      - ./nuxt-app:/app
+      - /app/node_modules
     environment:
-      # Чтобы Nuxt увидел изменения на файловой системе Windows
       - CHOKIDAR_USEPOLLING=true
       - CHOKIDAR_INTERVAL=1000
     ports:

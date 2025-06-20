@@ -1,7 +1,8 @@
-import { defineEventHandler, readBody, createError } from "h3";
-import { prisma } from "~/server/db";
-import { CustomPeriodSchema } from "~/types";
-import type { PricePoint, CustomPeriodDTO } from "~/types";
+import { defineEventHandler, readBody, createError } from 'h3';
+
+import { prisma } from '~/server/db';
+import { CustomPeriodSchema } from '~/types';
+import type { PricePoint, CustomPeriodDTO } from '~/types';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event);
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
         lte: new Date(to),
       },
     },
-    orderBy: { timestamp: "asc" },
+    orderBy: { timestamp: 'asc' },
   });
 
   const data: PricePoint[] = records.map((r) => ({

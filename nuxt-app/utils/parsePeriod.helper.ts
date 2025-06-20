@@ -1,20 +1,20 @@
-export function parsePeriod(period: "day" | "week" | "month" | "year"): {
+export function parsePeriod(period: 'day' | 'week' | 'month' | 'year'): {
   from: Date;
   to: Date;
 } {
   const to = new Date();
   const from = new Date(to);
   switch (period) {
-    case "day":
+    case 'day':
       from.setDate(to.getDate() - 1);
       break;
-    case "week":
+    case 'week':
       from.setDate(to.getDate() - 7);
       break;
-    case "month":
+    case 'month':
       from.setMonth(to.getMonth() - 1);
       break;
-    case "year":
+    case 'year':
       from.setFullYear(to.getFullYear() - 1);
       break;
     default:

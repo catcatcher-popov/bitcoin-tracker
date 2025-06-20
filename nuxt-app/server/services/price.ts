@@ -1,6 +1,8 @@
-import { prisma } from "../db/prismaClient";
-import { fetchLatestPrice } from "./binance";
-import type { PricePoint } from "~/types";
+import { prisma } from '../db/prismaClient';
+
+import { fetchLatestPrice } from './binance';
+
+import type { PricePoint } from '~/types';
 
 export async function collectAndSavePrice(): Promise<PricePoint> {
   const price = await fetchLatestPrice();

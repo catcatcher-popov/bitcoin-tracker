@@ -1,19 +1,20 @@
-import { defineEventHandler, createError } from "h3";
-import { prisma } from "~/server/db";
-import { parsePeriod } from "~/utils";
-import type { PricePoint } from "~/types";
+import { defineEventHandler, createError } from 'h3';
+
+import { prisma } from '~/server/db';
+import type { PricePoint } from '~/types';
+import { parsePeriod } from '~/utils';
 
 export default defineEventHandler(async (event) => {
   const period = event.context.params?.period as string;
-  if (!["day", "week", "month", "year"].includes(period)) {
-    throw createError({ statusCode: 400, statusMessage: "Invalid period" });
+  if (!['day', 'week', 'month', 'year'].includes(period)) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid period' });
   }
 
-  const { from, to } = parsePeriod(period as "day" | "week" | "month" | "year");
+  const { from, to } = parsePeriod(period as 'day' | 'week' | 'month' | 'year');
 
   const records = await prisma.price.findMany({
     where: { timestamp: { gte: from, lte: to } },
-    orderBy: { timestamp: "asc" },
+    orderBy: { timestamp: 'asc' },
   });
 
   const data: PricePoint[] = records.map((r) => ({

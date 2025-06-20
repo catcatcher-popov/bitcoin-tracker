@@ -1,7 +1,8 @@
-import { defineNitroPlugin } from "#imports";
-import { setupPriceCollector } from "../cron/priceCollector";
+import { setupPriceCollector } from '../cron/priceCollector';
+
+import { defineNitroPlugin } from '#imports';
 
 export default defineNitroPlugin(() => {
-  console.log("[Cron Plugin] Инициализируем сбор цен BTC…");
+  console.log('[Cron Plugin] Инициализируем сбор цен BTC…');
   setupPriceCollector();
 });

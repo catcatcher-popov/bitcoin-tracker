@@ -1,1 +1,1 @@
-export { setupPriceCollector } from './priceCollector'
+export { setupPriceCollector } from "./priceCollector";

@@ -1,4 +1,4 @@
 export type PricePoint = {
-  timestamp: Date
-  price: number
-}
+  timestamp: Date;
+  price: number;
+};

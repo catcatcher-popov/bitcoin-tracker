@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  app:
+    # Вместо rebuild собираем образ только один раз,
+    # а в dev монтируем исходники
+    build:
+      context: ./nuxt-app
+      dockerfile: Dockerfile
+    command: >
+      sh -c "
+        ./wait-for-db.sh &&
+        npx prisma db push --accept-data-loss &&
+        npm run dev
+      "
+    volumes:
+      - ./nuxt-app:/app               # весь код монтируется в /app
+      - /app/node_modules             # node_modules — из контейнера, чтобы не затирать
+    environment:
+      # Чтобы Nuxt увидел изменения на файловой системе Windows
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy

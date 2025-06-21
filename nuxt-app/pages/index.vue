@@ -20,4 +20,3 @@ import { usePrices } from '../composables/usePrices';
 
 const { period, customRange, data, loading, error } = usePrices();
 </script>
-``

@@ -1,6 +1,6 @@
 import { defineEventHandler, createError } from 'h3';
 
-import { prisma } from '~/server/db';
+import { getPrisma } from '~/server/db';
 import type { PricePoint } from '~/types';
 import { parsePeriod } from '~/utils';
 
@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
   if (!['day', 'week', 'month', 'year'].includes(period)) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid period' });
   }
+  const prisma = await getPrisma();
 
   const { from, to } = parsePeriod(period as 'day' | 'week' | 'month' | 'year');
 

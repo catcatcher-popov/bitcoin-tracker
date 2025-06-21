@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3';
 
-import { prisma } from '~/server/db';
+import { getPrisma } from '~/server/db';
 import { CustomPeriodSchema } from '~/types';
 import type { PricePoint, CustomPeriodDTO } from '~/types';
 
@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 422, statusMessage: parse.error.message });
   }
   const { from, to } = parse.data as CustomPeriodDTO;
+  const prisma = await getPrisma();
 
   const records = await prisma.price.findMany({
     where: {

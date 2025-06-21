@@ -18,11 +18,8 @@ const BINANCE_INTERVALS: { ms: number; label: string }[] = [
 
 function selectInterval(from: Date, to: Date): string {
   const span = to.getTime() - from.getTime()
-  const targetPoints = 100
-  let ideal = span / targetPoints
-  const minMs = 10 * 60 * 1000
-  const maxMs = 12 * 60 * 60 * 1000
-  ideal = Math.max(minMs, Math.min(maxMs, ideal))
+  const targetPoints = 400
+  const ideal = span / targetPoints
   const found = BINANCE_INTERVALS.find(i => i.ms >= ideal)
   return found ? found.label : BINANCE_INTERVALS[BINANCE_INTERVALS.length - 1].label
 }

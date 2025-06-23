@@ -14,5 +14,5 @@
 @theme {
   background-color: theme('colors.background.DEFAULT');
   color: theme('colors.text.primary');
-  --font-display: "PT Sans", "ui-sans-serif", "system-ui", "sans-serif";
+  --font-display: 'PT Sans', 'ui-sans-serif', 'system-ui', 'sans-serif';
 }

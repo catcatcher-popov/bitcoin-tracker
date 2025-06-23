@@ -3,7 +3,12 @@
     <button
       v-for="opt in options"
       :key="opt.value"
-      :class="buttonClass"
+      :class="[
+        'px-4 py-2 rounded transition-colors',
+        period === opt.value
+          ? 'bg-bitcoin-gold text-background-dark'
+          : 'bg-background-dark text-text-secondary hover:bg-bitcoin-gold-secondary hover:text-background-dark',
+      ]"
       @click="$emit('update:period', opt.value)"
     >
       {{ opt.label }}
@@ -12,11 +17,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-
 import type { PeriodType } from '~/types';
 
-const props = defineProps<{
+defineProps<{
   period: PeriodType;
 }>();
 
@@ -29,12 +32,6 @@ const options = [
   { label: 'Неделя', value: 'week' },
   { label: 'Месяц', value: 'month' },
   { label: 'Год', value: 'year' },
-  { label: 'Свои…', value: 'custom' },
+  { label: 'Период...', value: 'custom' },
 ] as const;
-
-const buttonClass = (value: PeriodType) =>
-  computed(() => [
-    'px-4 py-2 rounded transition',
-    props.period === value ? 'bg-blue-600 text-white' : 'bg-gray-200',
-  ]);
 </script>

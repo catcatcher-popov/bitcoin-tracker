@@ -6,9 +6,9 @@
 
     <DateRangePicker v-if="period === 'custom'" v-model="customRange" />
 
-    <div v-if="loading" class="text-center text-gray-500">Загрузка…</div>
-    <div v-else-if="error" class="text-center text-red-500">{{ error }}</div>
+    <div v-if="error" class="text-center text-red-500">{{ error }}</div>
     <PriceChart v-else :data="data" />
+    <div v-if="loading" class="text-center text-gray-500">Загрузка…</div>
   </div>
 </template>
 

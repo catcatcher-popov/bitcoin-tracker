@@ -14,6 +14,7 @@ const config: Config = {
       colors: {
         bitcoin: {
           gold: '#F7931A',
+          'gold-secondary': '#F7931A60',
         },
         background: {
           DEFAULT: '#121212',

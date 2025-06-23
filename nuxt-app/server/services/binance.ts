@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+import { BINANCE_API_URL, SYMBOL } from '~/constants';
+
 export async function fetchLatestPrice(): Promise<number> {
   const { data } = await axios.get<{ symbol: string; price: string }>(
-    'https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'
+    `${BINANCE_API_URL}/ticker/price`,
+    { params: { symbol: SYMBOL } }
   );
   return parseFloat(data.price);
 }

@@ -1,11 +1,13 @@
-import { defineEventHandler, readBody, createError, getQuery } from 'h3';
+import { getQuery, readBody, createError } from 'h3';
 
-import { CustomPeriodSchema } from 'types';
+import { createHandler } from '../utils/createHandler';
+
 import type { PricePoint } from 'types';
+import { CustomPeriodSchema } from 'types';
 import { getPrisma } from '~/server/db/prismaClient';
-import { fetchAndSaveHistoricalPrices } from '~/server/services/historical';
+import { fetchAndSaveHistoricalPrices } from '~/server/services';
 
-export default defineEventHandler(async (event) => {
+export default createHandler<{ data: PricePoint[] }>(async (event) => {
   const {
     from: qFrom,
     to: qTo,
@@ -15,20 +17,20 @@ export default defineEventHandler(async (event) => {
     to?: string;
     refresh?: string;
   };
-  let from: string | undefined = qFrom;
-  let to: string | undefined = qTo;
+  let from = qFrom;
+  let to = qTo;
 
   if (!from || !to) {
     const body = await readBody(event);
-    const parse = CustomPeriodSchema.safeParse(body);
-    if (!parse.success) {
+    const parsed = CustomPeriodSchema.safeParse(body);
+    if (!parsed.success) {
       throw createError({
         statusCode: 422,
-        statusMessage: parse.error.message,
+        statusMessage: parsed.error.message,
       });
     }
-    from = parse.data.from;
-    to = parse.data.to;
+    from = parsed.data.from;
+    to = parsed.data.to;
   }
 
   const fromDate = new Date(from);
@@ -46,9 +48,10 @@ export default defineEventHandler(async (event) => {
     orderBy: { timestamp: 'asc' },
   });
 
-  const data: PricePoint[] = records.map((r) => ({
-    timestamp: r.timestamp,
-    price: r.price,
-  }));
-  return { data };
+  return {
+    data: records.map<PricePoint>((r) => ({
+      timestamp: r.timestamp,
+      price: r.price,
+    })),
+  };
 });

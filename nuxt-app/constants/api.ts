@@ -19,3 +19,8 @@ export const BINANCE_INTERVALS: Array<{
   { label: '1w', ms: 7 * 24 * 60 * 60_000 },
   { label: '1m', ms: 30 * 24 * 60 * 60_000 },
 ];
+
+export const BASE_API_PATH = '/api/prices';
+export const BINANCE_API_URL = 'https://api.binance.com/api/v3';
+export const SYMBOL = 'BTCUSDT';
+export const DATA_POINTS_LIMIT = 4000;

@@ -3,12 +3,7 @@
     <button
       v-for="opt in options"
       :key="opt.value"
-      :class="[
-        'px-4 py-2 rounded transition-colors',
-        period === opt.value
-          ? 'bg-bitcoin-gold text-background-dark'
-          : 'bg-background-dark text-text-secondary hover:bg-bitcoin-gold hover:text-background-dark'
-      ]"
+      :class="buttonClass"
       @click="$emit('update:period', opt.value)"
     >
       {{ opt.label }}

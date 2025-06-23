@@ -15,6 +15,9 @@ const BINANCE_INTERVALS: { ms: number; label: string }[] = [
   { ms: 6 * 60 * 60_000, label: '6h' },
   { ms: 12 * 60 * 60_000, label: '12h' },
   { ms: 24 * 60 * 60_000, label: '1d' },
+  { ms: 3 * 24 * 60 * 60_000, label: '3d' },
+  { ms: 7 * 24 * 60 * 60_000, label: '1w' },
+  { ms: 30 * 24 * 60 * 60_000, label: '1m' },
 ];
 
 function selectInterval(from: Date, to: Date): string {

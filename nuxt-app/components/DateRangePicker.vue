@@ -1,15 +1,11 @@
 <template>
   <div class="flex items-end space-x-4 mb-4">
-    <div
-      v-for="f in fields"
-      :key="f.id"
-      class="flex flex-col"
-    >
+    <div v-for="f in fields" :key="f.id" class="flex flex-col">
       <label :for="f.id" class="text-text-secondary mb-1">{{ f.label }}</label>
       <input
         :id="f.id"
-        type="datetime-local"
         v-model="values[f.key]"
+        type="datetime-local"
         class="bg-background-dark border border-text-secondary text-text-primary rounded px-2 py-1 focus:outline-none focus:border-bitcoin-gold"
       />
     </div>

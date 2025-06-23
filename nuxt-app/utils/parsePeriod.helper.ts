@@ -1,4 +1,5 @@
-export function parsePeriod(period: 'day' | 'week' | 'month' | 'year'): {
+import type { Period } from '~/constants/periods';
+export function parsePeriod(period: Period): {
   from: Date;
   to: Date;
 } {

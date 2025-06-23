@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 import { defineNuxtConfig } from 'nuxt/config';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -18,5 +20,11 @@ export default defineNuxtConfig({
         'oxc-parser',
       ],
     },
+  },
+  alias: {
+    // Строгая типизация: теперь import … from 'types' найдёт types/index.ts
+    types: fileURLToPath(new URL('./types', import.meta.url)),
+    constants: fileURLToPath(new URL('./constants', import.meta.url)),
+    utils: fileURLToPath(new URL('./utils', import.meta.url)),
   },
 });

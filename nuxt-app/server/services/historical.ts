@@ -1,41 +1,24 @@
 import axios from 'axios';
 
+import type { PricePoint, BinanceIntervalLabel } from 'types';
+import { BINANCE_INTERVALS } from '~/constants';
 import { getPrisma } from '~/server/db/prismaClient';
-import type { PricePoint } from '~/types';
 
-const BINANCE_INTERVALS: { ms: number; label: string }[] = [
-  { ms: 60_000, label: '1m' },
-  { ms: 3 * 60_000, label: '3m' },
-  { ms: 5 * 60_000, label: '5m' },
-  { ms: 15 * 60_000, label: '15m' },
-  { ms: 30 * 60_000, label: '30m' },
-  { ms: 60 * 60_000, label: '1h' },
-  { ms: 2 * 60 * 60_000, label: '2h' },
-  { ms: 4 * 60 * 60_000, label: '4h' },
-  { ms: 6 * 60 * 60_000, label: '6h' },
-  { ms: 12 * 60 * 60_000, label: '12h' },
-  { ms: 24 * 60 * 60_000, label: '1d' },
-  { ms: 3 * 24 * 60 * 60_000, label: '3d' },
-  { ms: 7 * 24 * 60 * 60_000, label: '1w' },
-  { ms: 30 * 24 * 60 * 60_000, label: '1m' },
-];
-
-function selectInterval(from: Date, to: Date): string {
+function selectInterval(from: Date, to: Date): BinanceIntervalLabel {
   const span = to.getTime() - from.getTime();
-  const targetPoints = 600;
-  const ideal = span / targetPoints;
-  const found = BINANCE_INTERVALS.find((i) => i.ms >= ideal);
-  return found ? found.label : BINANCE_INTERVALS[BINANCE_INTERVALS.length - 1].label;
+  const target = 2000;
+  const ideal = span / target;
+  return BINANCE_INTERVALS.find((i) => i.ms >= ideal)?.label ?? BINANCE_INTERVALS[-1].label;
 }
 
 export async function fetchAndSaveHistoricalPrices(from: Date, to: Date): Promise<void> {
   const prisma = await getPrisma();
-
-  const existing = await prisma.price.findMany({
+  const haveArr = await prisma.price.findMany({
     where: { timestamp: { gte: from, lte: to } },
     select: { timestamp: true },
   });
-  const have = new Set(existing.map((r) => +r.timestamp));
+  const haveSet = new Set(haveArr.map((r) => +r.timestamp));
+
   const interval = selectInterval(from, to);
   const resp = await axios.get<any[]>('https://api.binance.com/api/v3/klines', {
     params: {
@@ -43,18 +26,18 @@ export async function fetchAndSaveHistoricalPrices(from: Date, to: Date): Promis
       interval,
       startTime: from.getTime(),
       endTime: to.getTime(),
-      limit: 1000,
+      limit: 4000,
     },
   });
 
   const points: PricePoint[] = resp.data.map((k) => ({
-    timestamp: new Date(k[0]), // openTime
-    price: parseFloat(k[4]), // close price
+    timestamp: new Date(k[0]),
+    price: parseFloat(k[4]),
   }));
 
   await prisma.price.createMany({
     data: points
-      .filter((p) => !have.has(+p.timestamp))
+      .filter((p) => !haveSet.has(+p.timestamp))
       .map((p) => ({ timestamp: p.timestamp, price: p.price })),
     skipDuplicates: true,
   });

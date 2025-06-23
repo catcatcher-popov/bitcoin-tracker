@@ -1,25 +1,47 @@
-import { defineEventHandler, readBody, createError } from 'h3';
+import { defineEventHandler, readBody, createError, getQuery } from 'h3';
 
-import { getPrisma } from '~/server/db';
+import { CustomPeriodSchema } from 'types';
+import type { PricePoint } from 'types';
+import { getPrisma } from '~/server/db/prismaClient';
 import { fetchAndSaveHistoricalPrices } from '~/server/services/historical';
-import { CustomPeriodSchema } from '~/types';
-import type { PricePoint, CustomPeriodDTO } from '~/types';
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const parse = CustomPeriodSchema.safeParse(body);
-  if (!parse.success) {
-    throw createError({ statusCode: 422, statusMessage: parse.error.message });
-  }
-  const { from, to } = parse.data as CustomPeriodDTO;
+  const {
+    from: qFrom,
+    to: qTo,
+    refresh,
+  } = getQuery(event) as {
+    from?: string;
+    to?: string;
+    refresh?: string;
+  };
+  let from: string | undefined = qFrom;
+  let to: string | undefined = qTo;
 
-  // **Докачиваем** данные по произвольному периоду
-  await fetchAndSaveHistoricalPrices(new Date(from), new Date(to));
+  if (!from || !to) {
+    const body = await readBody(event);
+    const parse = CustomPeriodSchema.safeParse(body);
+    if (!parse.success) {
+      throw createError({
+        statusCode: 422,
+        statusMessage: parse.error.message,
+      });
+    }
+    from = parse.data.from;
+    to = parse.data.to;
+  }
+
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+
+  if (refresh === 'true') {
+    await fetchAndSaveHistoricalPrices(fromDate, toDate);
+  }
 
   const prisma = await getPrisma();
   const records = await prisma.price.findMany({
     where: {
-      timestamp: { gte: new Date(from), lte: new Date(to) },
+      timestamp: { gte: fromDate, lte: toDate },
     },
     orderBy: { timestamp: 'asc' },
   });
@@ -28,6 +50,5 @@ export default defineEventHandler(async (event) => {
     timestamp: r.timestamp,
     price: r.price,
   }));
-
   return { data };
 });

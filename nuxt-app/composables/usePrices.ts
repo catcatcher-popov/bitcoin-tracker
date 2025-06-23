@@ -1,23 +1,31 @@
-// composables/usePrices.ts
-import { ref, watch } from 'vue';
+import { ref, watch, type Ref } from 'vue';
 
-import type { PricePoint, CustomPeriodDTO, PeriodType } from '~/types';
+import type { PricePoint, CustomPeriodDTO } from 'types';
 
-export function usePrices() {
-  const period = ref<PeriodType>('day');
+export type UsePrices = {
+  period: Ref<'day' | 'week' | 'month' | 'year' | 'custom'>;
+  customRange: Ref<CustomPeriodDTO>;
+  data: Ref<PricePoint[]>;
+  loading: Ref<boolean>;
+  error: Ref<string | null>;
+};
+
+export function usePrices(): UsePrices {
+  const period = ref<'day' | 'week' | 'month' | 'year' | 'custom'>('day');
   const customRange = ref<CustomPeriodDTO>({ from: '', to: '' });
   const data = ref<PricePoint[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
 
-  function setDefaultCustomRange() {
+  function setDefaultCustomRange(): void {
     const now = new Date();
-    const fromDate = new Date(now.getTime() - 24 * 3600_000);
-    customRange.value.from = fromDate.toISOString().slice(0, 16);
-    customRange.value.to = now.toISOString().slice(0, 16);
+    const yesterday = new Date(now.getTime() - 24 * 3600_000);
+    customRange.value = {
+      from: yesterday.toISOString().slice(0, 16),
+      to: now.toISOString().slice(0, 16),
+    };
   }
-
-  async function fetchPrices() {
+  async function fetchPrices(): Promise<void> {
     loading.value = true;
     error.value = null;
 
@@ -28,24 +36,34 @@ export function usePrices() {
     }
 
     try {
-      let resp: { data: PricePoint[] };
+      let initResp: { data: PricePoint[] };
       if (period.value === 'custom') {
-        resp = await $fetch('/api/prices/custom', {
+        initResp = await $fetch('/api/prices/custom', {
           method: 'POST',
-          body: {
-            from: customRange.value.from,
-            to: customRange.value.to,
-          },
+          body: customRange.value,
         });
       } else {
-        resp = await $fetch(`/api/prices/${period.value}`);
+        initResp = await $fetch(`/api/prices/${period.value}`);
       }
-      data.value = resp.data.map((p) => ({
+      data.value = initResp.data.map((p) => ({
+        timestamp: new Date(p.timestamp),
+        price: p.price,
+      }));
+      let updResp: { data: PricePoint[] };
+      if (period.value === 'custom') {
+        updResp = await $fetch('/api/prices/custom?refresh=true', {
+          method: 'POST',
+          body: customRange.value,
+        });
+      } else {
+        updResp = await $fetch(`/api/prices/${period.value}?refresh=true`);
+      }
+      data.value = updResp.data.map((p) => ({
         timestamp: new Date(p.timestamp),
         price: p.price,
       }));
     } catch (e: any) {
-      error.value = e.message || 'Ошибка при загрузке данных';
+      error.value = e.message || 'Ошибка загрузки данных';
     } finally {
       loading.value = false;
     }

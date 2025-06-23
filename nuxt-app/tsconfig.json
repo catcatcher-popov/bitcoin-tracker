@@ -3,7 +3,12 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
-    "paths": { "~/*": ["./*"], "@/*": ["./*"] },
+    "paths": {
+      "~/*": ["./*"],
+      "#/*": ["./*"],
+      "types": ["types"],
+      "types/*": ["types/*"]
+    },
     "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": [

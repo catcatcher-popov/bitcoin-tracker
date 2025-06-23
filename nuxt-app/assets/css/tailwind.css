@@ -1,7 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 /* Определяем CSS-переменные под всякий случай */
 :root {
   --bg: #121212;
@@ -11,9 +11,8 @@
   --text-secondary: #a0a0a0;
 }
 
-/* Базовые стили */
-body {
+@theme {
   background-color: theme('colors.background.DEFAULT');
   color: theme('colors.text.primary');
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  --font-display: "PT Sans", "ui-sans-serif", "system-ui", "sans-serif";
 }

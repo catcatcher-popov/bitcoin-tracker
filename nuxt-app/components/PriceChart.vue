@@ -1,55 +1,48 @@
 <template>
-  <div v-if="data.length">
+  <div class="p-4 bg-background-dark rounded shadow-md">
     <Line :data="chartData" :options="chartOptions" />
   </div>
-  <p v-else class="text-center text-gray-500">Нет данных для отображения.</p>
 </template>
 
 <script setup lang="ts">
-// 1. STRONG TYPING и ИМПОРТ АДАПТЕРА до ChartJS.register
-import 'chartjs-adapter-date-fns';
-import { Chart as ChartJS, registerables } from 'chart.js';
+import 'chartjs-adapter-date-fns'
+import { Chart as ChartJS, registerables } from 'chart.js'
+ChartJS.register(...registerables)
 
-ChartJS.register(...registerables);
+import { computed, defineProps } from 'vue'
+import { Line } from 'vue-chartjs'
+import type { ChartOptions } from 'chart.js'
+import type { PricePoint } from '~/types'
 
-import type { ChartOptions } from 'chart.js';
-import { computed, defineProps } from 'vue';
-import { Line } from 'vue-chartjs';
+const props = defineProps<{ data: PricePoint[] }>()
 
-import type { PricePoint } from '~/types';
-
-// 2. SRP: получаем только пропс data с типом PricePoint[]
-const props = defineProps<{ data: PricePoint[] }>();
-
-// 3. DRY: вычисляем chartData и chartOptions, без магических строк
 const chartData = computed(() => ({
-  labels: props.data.map((p) => p.timestamp),
-  datasets: [
-    {
-      label: 'Цена BTC (USD)',
-      data: props.data.map((p) => p.price),
-      fill: false,
-      borderWidth: 2,
-      pointRadius: 0,
-    },
-  ],
-}));
+  labels: props.data.map(p => p.timestamp),
+  datasets: [{
+    label: 'Цена BTC, USD',
+    data: props.data.map(p => p.price),
+    borderColor: '#F7931A',  // золотой
+    backgroundColor: 'rgba(247,147,26,0.2)',
+    fill: true,
+    pointRadius: 0,
+    borderWidth: 2
+  }]
+}))
 
-// 4. STRICT TYPING опций
 const chartOptions = computed<ChartOptions<'line'>>(() => ({
   responsive: true,
   scales: {
     x: {
-      type: 'time', // используем 'time', а не 'timeseries'
+      type: 'time',
       time: { unit: 'day' },
-      title: { display: true, text: 'Дата' },
+      grid: { color: '#2a2a2a' }
     },
     y: {
-      title: { display: true, text: 'Цена, USD' },
-    },
+      grid: { color: '#2a2a2a' }
+    }
   },
   plugins: {
-    legend: { position: 'top' },
-  },
-}));
+    legend: { labels: { color: '#E0E0E0' } }
+  }
+}))
 </script>

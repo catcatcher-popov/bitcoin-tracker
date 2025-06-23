@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Определяем CSS-переменные под всякий случай */
+:root {
+  --bg: #121212;
+  --bg-dark: #0E0E0E;
+  --gold: #F7931A;
+  --text-primary: #E0E0E0;
+  --text-secondary: #A0A0A0;
+}
+
+/* Базовые стили */
+body {
+  background-color: theme('colors.background.DEFAULT');
+  color: theme('colors.text.primary');
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}

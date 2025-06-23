@@ -7,14 +7,13 @@
 <script setup lang="ts">
 import { Chart as ChartJS, registerables } from 'chart.js';
 import 'chartjs-adapter-date-fns';
-ChartJS.register(...registerables);
-
 import type { ChartOptions } from 'chart.js';
 import { computed } from 'vue';
 import { Line } from 'vue-chartjs';
 
 import type { PricePoint } from 'types';
 
+ChartJS.register(...registerables);
 const props = defineProps<{ data: PricePoint[] }>();
 const sortedData = computed(() =>
   [...props.data].sort((b, a) => a.timestamp.getTime() - b.timestamp.getTime())

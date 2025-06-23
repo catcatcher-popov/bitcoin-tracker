@@ -1,9 +1,10 @@
 import { ref, watch, type Ref } from 'vue';
 
 import type { PricePoint, CustomPeriodDTO } from 'types';
+import { BASE_API_PATH, type Period } from '~/constants';
 
 export type UsePrices = {
-  period: Ref<'day' | 'week' | 'month' | 'year' | 'custom'>;
+  period: Ref<Period>;
   customRange: Ref<CustomPeriodDTO>;
   data: Ref<PricePoint[]>;
   loading: Ref<boolean>;
@@ -11,7 +12,7 @@ export type UsePrices = {
 };
 
 export function usePrices(): UsePrices {
-  const period = ref<'day' | 'week' | 'month' | 'year' | 'custom'>('day');
+  const period = ref<Period>('day');
   const customRange = ref<CustomPeriodDTO>({ from: '', to: '' });
   const data = ref<PricePoint[]>([]);
   const loading = ref(false);
@@ -25,6 +26,7 @@ export function usePrices(): UsePrices {
       to: now.toISOString().slice(0, 16),
     };
   }
+
   async function fetchPrices(): Promise<void> {
     loading.value = true;
     error.value = null;
@@ -36,29 +38,29 @@ export function usePrices(): UsePrices {
     }
 
     try {
-      let initResp: { data: PricePoint[] };
+      let init: { data: PricePoint[] };
       if (period.value === 'custom') {
-        initResp = await $fetch('/api/prices/custom', {
+        init = await $fetch(`${BASE_API_PATH}/custom`, {
           method: 'POST',
           body: customRange.value,
         });
       } else {
-        initResp = await $fetch(`/api/prices/${period.value}`);
+        init = await $fetch(`${BASE_API_PATH}/${period.value}`);
       }
-      data.value = initResp.data.map((p) => ({
+      data.value = init.data.map((p) => ({
         timestamp: new Date(p.timestamp),
         price: p.price,
       }));
-      let updResp: { data: PricePoint[] };
+      let upd: { data: PricePoint[] };
       if (period.value === 'custom') {
-        updResp = await $fetch('/api/prices/custom?refresh=true', {
+        upd = await $fetch(`${BASE_API_PATH}/custom?refresh=true`, {
           method: 'POST',
           body: customRange.value,
         });
       } else {
-        updResp = await $fetch(`/api/prices/${period.value}?refresh=true`);
+        upd = await $fetch(`${BASE_API_PATH}/${period.value}?refresh=true`);
       }
-      data.value = updResp.data.map((p) => ({
+      data.value = upd.data.map((p) => ({
         timestamp: new Date(p.timestamp),
         price: p.price,
       }));

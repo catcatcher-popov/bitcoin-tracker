@@ -3,7 +3,7 @@ import axios from 'axios';
 import type { PricePoint, BinanceIntervalLabel } from 'types';
 import { BINANCE_API_URL, DATA_POINTS_LIMIT, SYMBOL } from '~/constants';
 import { getPrisma } from '~/server/db/prismaClient';
-import { selectInterval } from '~/utils/selectInterval';
+import { selectInterval } from '~/utils';
 
 export async function fetchAndSaveHistoricalPrices(from: Date, to: Date): Promise<void> {
   const prisma = await getPrisma();

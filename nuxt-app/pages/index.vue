@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-svw mx-auto px-32 py-8 bg-background-dark text-text-primary">
+  <div class="max-w-dvw mx-auto px-32 py-8 bg-background-dark text-text-primary">
     <h1 class="text-3xl font-bold mb-6 text-bitcoin-gold">График цен Bitcoin</h1>
 
     <PeriodSelector :period="period" @update:period="period = $event" />
@@ -8,7 +8,7 @@
 
     <div v-if="error" class="text-center text-red-500">{{ error }}</div>
     <PriceChart v-else :data="data" />
-    <div v-if="loading" class="text-center text-text-secondary">Загрузка данных…</div>
+    <div v-if="loading" class="text-center text-text-secondary">Загрузка…</div>
   </div>
 </template>
 
@@ -16,8 +16,7 @@
 import DateRangePicker from '~/components/DateRangePicker.vue';
 import PeriodSelector from '~/components/PeriodSelector.vue';
 import PriceChart from '~/components/PriceChart.vue';
-import type { UsePrices } from '~/composables/usePrices';
-import { usePrices } from '~/composables/usePrices';
+import { usePrices, type UsePrices } from '~/composables/usePrices';
 
 const { period, customRange, data, loading, error }: UsePrices = usePrices();
 </script>

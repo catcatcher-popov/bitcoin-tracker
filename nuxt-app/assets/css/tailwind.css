@@ -9,10 +9,10 @@
   --gold: #f7931a;
   --text-primary: #e0e0e0;
   --text-secondary: #a0a0a0;
+  --font-display: 'PT Sans', 'ui-sans-serif', 'system-ui', 'sans-serif';
 }
 
-@theme {
+body {
   background-color: theme('colors.background.DEFAULT');
   color: theme('colors.text.primary');
-  --font-display: 'PT Sans', 'ui-sans-serif', 'system-ui', 'sans-serif';
 }

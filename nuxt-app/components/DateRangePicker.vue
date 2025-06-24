@@ -1,13 +1,13 @@
 <template>
   <div class="flex items-end space-x-8">
     <div v-for="f in FIELDS" :key="f.id" class="flex flex-row items-center">
-      <div class="bg-text-primary/60 rounded pl-4">
-        <label :for="f.id" class="text-background-dark mr-4 mb-1">{{ f.label }}</label>
+      <div class="bg-bitcoin-gold-secondary rounded pl-4">
+        <label :for="f.id" class="text-bitcoin-gold mr-4 mb-1">{{ f.label }}</label>
         <input
           :id="f.id"
           v-model="values[f.key]"
           type="datetime-local"
-          class="bg-background-dark border border-text-primary/30 text-text-primary rounded px-2 py-1 focus:outline-none focus:border-bitcoin-gold"
+          class="bg-background-dark border border-bitcoin-gold-secondary text-text-primary rounded px-2 py-1 focus:outline-none focus:border-bitcoin-gold"
         />
       </div>
     </div>

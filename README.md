@@ -1,75 +1,89 @@
-# Nuxt Minimal Starter
+# Bitcoin Tracker
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Приложение для отслеживания и визуализации цен на Bitcoin с интерактивным графиком.
 
-## Setup
+---
 
-Make sure to install dependencies:
+## Технологии
 
-```bash
-# npm
-npm install
+- **Nuxt 3 (Vue 3 + TypeScript)**
+- **Prisma** + **PostgreSQL**
+- **Chart.js** (через vue-chartjs)
+- **Docker Compose**
+- **ESLint** + **Prettier** (стиль кода)
 
-# pnpm
-pnpm install
+---
 
-# yarn
-yarn install
+## Быстрый старт
 
-# bun
-bun install
+### 🚀 С Docker
+
+1. Склонировать репозиторий и перейти в папку:
+   ```bash
+   git clone https://github.com/natalieeatscats/bitcoin-tracker.git
+   cd bitcoin-tracker
+
+
+2. Запустить контейнеры:
+
+   ```bash
+   docker-compose up --build -d
+   ```
+3. Перейти в браузере на [http://localhost:3000](http://localhost:3000).
+
+### 🛠 Локально (без Docker)
+
+1. Установить зависимости:
+
+   ```bash
+   npm install
+   ```
+2. Применить миграции:
+
+   ```bash
+   npx prisma migrate dev
+   ```
+3. Запустить dev-сервер:
+
+   ```bash
+   npm run dev
+   ```
+4. Открыть [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Использование
+
+* **Период**: кнопки «День», «Неделя», «Месяц», «Год» и «Указать...» (выбор custom-диапазона).
+* **График**: отображает цену BTC за выбранный интервал.
+* **Обновление**: сначала берутся данные из локальной БД, затем по флагу `refresh` докачиваются с биржи и перерисовываются.
+
+---
+
+## Структура проекта
+
+```
+/components      — Vue-компоненты UI  
+/composables     — логика fetch + state  
+/constants       — константы  
+/utils           — утилиты (parsePeriod, selectInterval, formatDate)  
+/pages           — страницы (файловая маршрутизация)  
+/prisma          — схема и миграции БД  
+/server  
+  /api           — HTTP-handler’ы (Nuxt Nitro)  
+  /domain        — сущности + use-cases  
+  /repositories  — CRUD-репозитории    
+  /services      — интеграция с Binance API  
 ```
 
-## Development Server
+---
 
-Start the development server on `http://localhost:3000`:
+## Принципы кода
 
-```bash
-# npm
-npm run dev
+* **SOLID**: каждый модуль – одна ответственность.
+* **DRY**: общие константы и утилиты вынесены единожды.
+* **Типизация**: строгий `strict` TypeScript по всему стеку.
+* **Расширяемость**: при необходимости код можно без проблем расширить, добавив, например, отслеживание других криптовалют или информацию по торгам.
+* **Конфигурация**: `.env` для всех внешних параметров, без «магических» строк в коде.
 
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+---

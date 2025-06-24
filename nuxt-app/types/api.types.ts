@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export type Period = 'day' | 'week' | 'month' | 'year' | 'custom';
+export type SetPeriod = Omit<Period, 'custom'>;
 export const CustomPeriodSchema = z.object({
   from: z.string().refine((s) => !isNaN(Date.parse(s)), 'Invalid date'),
   to: z.string().refine((s) => !isNaN(Date.parse(s)), 'Invalid date'),

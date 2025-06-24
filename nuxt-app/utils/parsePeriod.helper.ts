@@ -1,5 +1,5 @@
-import type { Period } from '~/constants/periods';
-export function parsePeriod(period: Period): {
+import type { SetPeriod } from '~/types';
+export function parseSetPeriod(period: SetPeriod): {
   from: Date;
   to: Date;
 } {

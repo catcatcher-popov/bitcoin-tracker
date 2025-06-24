@@ -1,34 +1,22 @@
 import { getQuery } from 'h3';
 
-import { createHandler } from '../utils/createHandler';
-import { validatePeriod } from '../utils/validatePeriod';
+import { createHandler, validatePeriod } from '../utils';
 
-import type { PricePoint } from 'types';
-import type { Period } from '~/constants/periods';
-import { getPrisma } from '~/server/db/prismaClient';
-import { fetchAndSaveHistoricalPrices } from '~/server/services';
-import { parsePeriod } from '~/utils';
+import type { Period } from 'types';
+import { parsePeriod } from 'utils';
+import type { Price } from '~/server/domain/entities/price.entity';
+import { GetPriceHistoryUseCase } from '~/server/domain/use-cases/get-price-history.use-case';
 
-export default createHandler<{ data: PricePoint[] }>(async (event) => {
-  const periodRaw = event.context.params?.period;
-  validatePeriod(periodRaw);
-  const period = periodRaw as Period;
+export default createHandler<{ data: Price[] }>(async (event) => {
+  const raw = event.context.params?.period;
+  validatePeriod(raw);
+  const period = raw as Period;
 
   const { from, to } = parsePeriod(period);
   const { refresh } = getQuery(event) as { refresh?: string };
-  if (refresh === 'true') {
-    await fetchAndSaveHistoricalPrices(from, to);
-  }
-  const prisma = await getPrisma();
-  const records = await prisma.price.findMany({
-    where: { timestamp: { gte: from, lte: to } },
-    orderBy: { timestamp: 'asc' },
-  });
 
-  return {
-    data: records.map<PricePoint>((r) => ({
-      timestamp: r.timestamp,
-      price: r.price,
-    })),
-  };
+  const useCase = new GetPriceHistoryUseCase();
+  const prices = await useCase.execute(from, to, refresh === 'true');
+
+  return { data: prices };
 });

@@ -39,7 +39,6 @@ COPY --from=builder /app /app
 RUN chmod +x ./wait-for-db.sh
 
 EXPOSE 3000
-
 # 9) Стартуем: ждём БД, публикуем схему и стартуем прод-сервер
 CMD ./wait-for-db.sh && \
     npx prisma db push --accept-data-loss && \

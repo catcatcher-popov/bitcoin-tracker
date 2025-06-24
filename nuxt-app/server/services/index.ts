@@ -1,3 +1,1 @@
-export { fetchLatestPrice } from './binance';
-export { collectAndSavePrice } from './price';
-export { fetchAndSaveHistoricalPrices } from './historical';
+export { fetchAndSaveHistoricalPrices } from './historical.service';

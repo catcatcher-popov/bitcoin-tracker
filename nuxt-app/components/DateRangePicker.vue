@@ -1,15 +1,20 @@
 <template>
-  <div class="flex items-end space-x-4 mb-4">
-    <div v-for="f in FIELDS" :key="f.id" class="flex flex-col">
-      <label :for="f.id" class="text-text-secondary mb-1">{{ f.label }}</label>
-      <input
-        :id="f.id"
-        v-model="values[f.key]"
-        type="datetime-local"
-        class="bg-background-dark border border-text-secondary text-text-primary rounded px-2 py-1 focus:outline-none focus:border-bitcoin-gold"
-      />
+  <div class="flex items-end space-x-8">
+    <div v-for="f in FIELDS" :key="f.id" class="flex flex-row items-center">
+      <div class="bg-text-primary/60 rounded pl-4">
+        <label :for="f.id" class="text-background-dark mr-4 mb-1">{{ f.label }}</label>
+        <input
+          :id="f.id"
+          v-model="values[f.key]"
+          type="datetime-local"
+          class="bg-background-dark border border-text-primary/30 text-text-primary rounded px-2 py-1 focus:outline-none focus:border-bitcoin-gold"
+        />
+      </div>
     </div>
-    <button class="px-4 py-2 bg-bitcoin-gold text-background-dark rounded" @click="apply">
+    <button
+      class="px-4 py-2 bg-none text-text-primary hover:bg-bitcoin-gold-secondary hover:shadow-lg hover:text-bitcoin-gold active:bg-bitcoin-gold active:text-background-dark transition-all justify-self-end rounded"
+      @click="apply"
+    >
       Применить
     </button>
   </div>

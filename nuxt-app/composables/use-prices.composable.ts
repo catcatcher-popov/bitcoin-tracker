@@ -1,7 +1,8 @@
 import { ref, watch, type Ref } from 'vue';
 
-import type { PricePoint, CustomPeriodDTO } from 'types';
-import { BASE_API_PATH, type Period } from '~/constants';
+import type { PricePoint, CustomPeriodDTO, Period } from 'types';
+import { DEFAULT_CUSTOM_RANGE_HOURS } from '~/constants';
+import { PriceApi } from '~/services';
 
 export type UsePrices = {
   period: Ref<Period>;
@@ -20,9 +21,9 @@ export function usePrices(): UsePrices {
 
   function setDefaultCustomRange(): void {
     const now = new Date();
-    const yesterday = new Date(now.getTime() - 24 * 3600_000);
+    const startTime = new Date(now.getTime() - DEFAULT_CUSTOM_RANGE_HOURS * 3600_000);
     customRange.value = {
-      from: yesterday.toISOString().slice(0, 16),
+      from: startTime.toISOString().slice(0, 16),
       to: now.toISOString().slice(0, 16),
     };
   }
@@ -38,34 +39,24 @@ export function usePrices(): UsePrices {
     }
 
     try {
-      let init: { data: PricePoint[] };
+      let points: PricePoint[];
+      // Initial
       if (period.value === 'custom') {
-        init = await $fetch(`${BASE_API_PATH}/custom`, {
-          method: 'POST',
-          body: customRange.value,
-        });
+        points = await PriceApi.initialCustom(customRange.value);
       } else {
-        init = await $fetch(`${BASE_API_PATH}/${period.value}`);
+        points = await PriceApi.initial(period.value);
       }
-      data.value = init.data.map((p) => ({
-        timestamp: new Date(p.timestamp),
-        price: p.price,
-      }));
-      let upd: { data: PricePoint[] };
+      data.value = points.map((p) => ({ ...p, timestamp: new Date(p.timestamp) }));
+
+      // Refresh
       if (period.value === 'custom') {
-        upd = await $fetch(`${BASE_API_PATH}/custom?refresh=true`, {
-          method: 'POST',
-          body: customRange.value,
-        });
+        points = await PriceApi.refreshCustom(customRange.value);
       } else {
-        upd = await $fetch(`${BASE_API_PATH}/${period.value}?refresh=true`);
+        points = await PriceApi.refresh(period.value);
       }
-      data.value = upd.data.map((p) => ({
-        timestamp: new Date(p.timestamp),
-        price: p.price,
-      }));
+      data.value = points.map((p) => ({ ...p, timestamp: new Date(p.timestamp) }));
     } catch (e: any) {
-      error.value = e.message || 'Ошибка загрузки данных';
+      error.value = e.message || 'Ошибка загрузки';
     } finally {
       loading.value = false;
     }

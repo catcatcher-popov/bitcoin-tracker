@@ -17,6 +17,7 @@
     "prisma/**/*",
     "components/**/*",
     "composables/**/*",
-    "pages/**/*"
+    "pages/**/*",
+    "services/price-api.service.ts"
   ]
 }

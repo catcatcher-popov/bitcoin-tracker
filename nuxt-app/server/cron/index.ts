@@ -1,1 +1,0 @@
-export { setupPriceCollector } from './priceCollector';

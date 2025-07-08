@@ -1,4 +1,3 @@
-#!/usr/bin/env sh
 set -e
 
 host="${DB_HOST:-db}"

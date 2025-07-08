@@ -1,4 +1,3 @@
-// server/domain/useCases/GetPriceHistoryUseCase.ts
 import { Price } from '~/server/domain/entities/price.entity';
 import { PriceRepository } from '~/server/domain/repositories/price.repository';
 import { fetchAndSaveHistoricalPrices } from '~/server/services/historical.service';

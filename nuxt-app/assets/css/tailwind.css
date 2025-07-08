@@ -2,7 +2,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* Определяем CSS-переменные под всякий случай */
 :root {
   --bg: #121212;
   --bg-dark: #0e0e0e;

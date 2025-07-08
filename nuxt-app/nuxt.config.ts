@@ -10,19 +10,11 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss'],
   nitro: {
     externals: {
-      // SRP: Nitro не бандлит нативные аддоны и парсеры
       inline: [],
-      external: [
-        // уже стоявший @prisma/client
-        '@prisma/client',
-        // исключаем TS-парсер и его oxc-parser
-        '@typescript-eslint/parser',
-        'oxc-parser',
-      ],
+      external: ['@prisma/client', '@typescript-eslint/parser', 'oxc-parser'],
     },
   },
   alias: {
-    // Строгая типизация: теперь import … from 'types' найдёт types/index.ts
     types: fileURLToPath(new URL('./types', import.meta.url)),
     constants: fileURLToPath(new URL('./constants', import.meta.url)),
     utils: fileURLToPath(new URL('./utils', import.meta.url)),
